@@ -326,6 +326,13 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 	private $_hash	= null;
 
 	/**
+	 * Notify cache controller on cell change
+	 *
+	 * @var boolean
+	 */
+	private $_notifyCacheControllerEnabled = true;
+
+	/**
 	 * Create a new worksheet
 	 *
 	 * @param PHPExcel		$pParent
@@ -1118,7 +1125,10 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 			// Coordinates
 			$aCoordinates = PHPExcel_Cell::coordinateFromString($pCoordinate);
 
-			$cell = $this->_cellCollection->addCacheData($pCoordinate,new PHPExcel_Cell($aCoordinates[0], $aCoordinates[1], null, PHPExcel_Cell_DataType::TYPE_NULL, $this));
+			$cell = new PHPExcel_Cell($aCoordinates[0], $aCoordinates[1], null, PHPExcel_Cell_DataType::TYPE_NULL, $this);
+			if ($this->_notifyCacheControllerEnabled) {
+				$cell->notifyCacheController();
+			}
 			$this->_cellCollectionIsSorted = false;
 
 			if (PHPExcel_Cell::columnIndexFromString($this->_cachedHighestColumn) < PHPExcel_Cell::columnIndexFromString($aCoordinates[0]))
@@ -1158,7 +1168,10 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 		$coordinate = $columnLetter . $pRow;
 
 		if (!$this->_cellCollection->isDataSet($coordinate)) {
-			$cell = $this->_cellCollection->addCacheData($coordinate, new PHPExcel_Cell($columnLetter, $pRow, null, PHPExcel_Cell_DataType::TYPE_NULL, $this));
+			$cell = new PHPExcel_Cell($columnLetter, $pRow, null, PHPExcel_Cell_DataType::TYPE_NULL, $this);
+			if ($this->_notifyCacheControllerEnabled) {
+				$cell->notifyCacheController();
+			}
 			$this->_cellCollectionIsSorted = false;
 
 			if (PHPExcel_Cell::columnIndexFromString($this->_cachedHighestColumn) < $pColumn)
@@ -1212,9 +1225,6 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 		} elseif (strpos($pCoordinate,'$') !== false) {
 			throw new PHPExcel_Exception('Cell coordinate must not be absolute.');
 		} else {
-			// Coordinates
-			$aCoordinates = PHPExcel_Cell::coordinateFromString($pCoordinate);
-
 			// Cell exists?
 			return $this->_cellCollection->isDataSet($pCoordinate);
 		}
@@ -1640,16 +1650,28 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 			// get the cells in the range
 			$aReferences = PHPExcel_Cell::extractAllCellReferencesInRange($pRange);
 
-			// create upper left cell if it does not already exist
+			// get upper left cell
 			$upperLeft = $aReferences[0];
-			if (!$this->cellExists($upperLeft)) {
-				$this->getCell($upperLeft)->setValueExplicit(null, PHPExcel_Cell_DataType::TYPE_NULL);
+			$cellExists = $this->cellExists($upperLeft);
+			$cell = $this->getCell($upperLeft);
+			if (!$cellExists) {
+                // save cell in cache
+				if (!$this->_notifyCacheControllerEnabled) {
+				    $cell->notifyCacheController();
+				}
 			}
+			$xfIndex = $cell->getXfIndex();
 
 			// create or blank out the rest of the cells in the range
 			$count = count($aReferences);
 			for ($i = 1; $i < $count; $i++) {
-				$this->getCell($aReferences[$i])->setValueExplicit(null, PHPExcel_Cell_DataType::TYPE_NULL);
+				$cell = $this->getCell($aReferences[$i]);
+				$cell->setValueExplicit(null, PHPExcel_Cell_DataType::TYPE_NULL);
+				$cell->setXfIndex($xfIndex);
+				// save cell in cache
+				if (!$this->_notifyCacheControllerEnabled) {
+				    $cell->notifyCacheController();
+				}
 			}
 
 		} else {
@@ -2749,6 +2771,27 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 	public function isTabColorSet()
 	{
 		return ($this->_tabColor !== NULL);
+	}
+
+
+	/**
+	 *	Is notifyCacheController enabled?
+	 *
+	 *	@return boolean
+	 */
+	public function getNotifyCacheControllerEnabled()
+	{
+		return $this->_notifyCacheControllerEnabled;
+	}
+
+	/**
+	 *	Enable/disable notifyCacheController
+	 *
+	 *	@param boolean $pValue
+	 */
+	public function setNotifyCacheControllerEnabled($pValue = true)
+	{
+		$this->_notifyCacheControllerEnabled = $pValue;
 	}
 
 	/**

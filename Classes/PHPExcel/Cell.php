@@ -277,7 +277,11 @@ class PHPExcel_Cell
 		// set the datatype
 		$this->_dataType = $pDataType;
 
-		return $this->notifyCacheController();
+		if ($this->_parent->getNotifyCacheControllerEnabled()) {
+			$this->notifyCacheController();
+		}
+
+		return $this;
 	}
 
 	/**
@@ -338,7 +342,11 @@ class PHPExcel_Cell
 			$this->_calculatedValue = (is_numeric($pValue)) ? (float) $pValue : $pValue;
 		}
 
-		return $this->notifyCacheController();
+		if ($this->_parent->getNotifyCacheControllerEnabled()) {
+			$this->notifyCacheController();
+		}
+
+		return $this;
 	}
 
 	/**
@@ -379,7 +387,11 @@ class PHPExcel_Cell
 
 		$this->_dataType = $pDataType;
 
-		return $this->notifyCacheController();
+		if ($this->_parent->getNotifyCacheControllerEnabled()) {
+			$this->notifyCacheController();
+		}
+
+		return $this;
 	}
 
 	/**
@@ -427,7 +439,11 @@ class PHPExcel_Cell
 
 		$this->_parent->setDataValidation($this->getCoordinate(), $pDataValidation);
 
-		return $this->notifyCacheController();
+		if ($this->_parent->getNotifyCacheControllerEnabled()) {
+			$this->notifyCacheController();
+		}
+
+		return $this;
 	}
 
 	/**
@@ -475,7 +491,11 @@ class PHPExcel_Cell
 
 		$this->_parent->setHyperlink($this->getCoordinate(), $pHyperlink);
 
-		return $this->notifyCacheController();
+		if ($this->_parent->getNotifyCacheControllerEnabled()) {
+			$this->notifyCacheController();
+		}
+
+		return $this;
 	}
 
 	/**
@@ -496,7 +516,11 @@ class PHPExcel_Cell
 	public function rebindParent(PHPExcel_Worksheet $parent) {
 		$this->_parent = $parent;
 
-		return $this->notifyCacheController();
+		if ($this->_parent->getNotifyCacheControllerEnabled()) {
+			$this->notifyCacheController();
+		}
+
+		return $this;
 	}
 
 	/**
@@ -937,7 +961,11 @@ class PHPExcel_Cell
 	{
 		$this->_xfIndex = $pValue;
 
-		return $this->notifyCacheController();
+		if ($this->_parent->getNotifyCacheControllerEnabled()) {
+			$this->notifyCacheController();
+		}
+
+		return $this;
 	}
 
 	/**
