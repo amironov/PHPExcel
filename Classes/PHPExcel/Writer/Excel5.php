@@ -117,8 +117,9 @@ class PHPExcel_Writer_Excel5 extends PHPExcel_Writer_Abstract implements PHPExce
 	 */
 	public function save($pFilename = null) {
 
-		// garbage collect
-		$this->_phpExcel->garbageCollect();
+		if ($this->_garbageCollectEnabled) {
+			$this->_phpExcel->garbageCollect();
+		}
 
 		$saveDebugLog = PHPExcel_Calculation::getInstance()->writeDebugLog;
 		PHPExcel_Calculation::getInstance()->writeDebugLog = false;

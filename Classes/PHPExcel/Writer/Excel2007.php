@@ -167,8 +167,9 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
 	public function save($pFilename = null)
 	{
 		if ($this->_spreadSheet !== NULL) {
-			// garbage collect
-			$this->_spreadSheet->garbageCollect();
+			if ($this->_garbageCollectEnabled) {
+				$this->_spreadSheet->garbageCollect();
+			}
 
 			// If $pFilename is php://output or php://stdout, make it a temporary file...
 			$originalFilename = $pFilename;
