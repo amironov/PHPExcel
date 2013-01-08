@@ -44,6 +44,7 @@ class PHPExcel_CachedObjectStorageFactory
     const cache_to_apc                  = 'APC';
     const cache_to_memcache             = 'Memcache';
     const cache_to_phpTemp              = 'PHPTemp';
+    const cache_to_phpTemp_bucket       = 'PHPTempBucket';
     const cache_to_wincache             = 'Wincache';
     const cache_to_sqlite               = 'SQLite';
     const cache_to_sqlite3              = 'SQLite3';
@@ -75,6 +76,7 @@ class PHPExcel_CachedObjectStorageFactory
         self::cache_in_memory_serialized,
         self::cache_igbinary,
         self::cache_to_phpTemp,
+        self::cache_to_phpTemp_bucket,
         self::cache_to_discISAM,
         self::cache_to_apc,
         self::cache_to_memcache,
@@ -99,6 +101,9 @@ class PHPExcel_CachedObjectStorageFactory
         self::cache_igbinary                => array(
                                                     ),
         self::cache_to_phpTemp              => array( 'memoryCacheSize' => '1MB'
+                                                    ),
+        self::cache_to_phpTemp_bucket       => array( 'memoryCacheSize'    => '1MB',
+                                                      'bucketMaxSize' => 20
                                                     ),
         self::cache_to_discISAM             => array( 'dir'             => NULL
                                                     ),
