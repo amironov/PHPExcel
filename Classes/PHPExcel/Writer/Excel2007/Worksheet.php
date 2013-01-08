@@ -44,7 +44,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 	 * @return	string					XML Output
 	 * @throws	PHPExcel_Writer_Exception
 	 */
-	public function writeWorksheet($pSheet = null, $pStringTable = null, $includeCharts = FALSE)
+	public function writeWorksheet($pSheet = null, $pStringTable = null, $includeCharts = FALSE, $sortCellCollectionEnabled = true)
 	{
 		if (!is_null($pSheet)) {
 			// Create XML writer
@@ -80,7 +80,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 				$this->_writeCols($objWriter, $pSheet);
 
 				// sheetData
-				$this->_writeSheetData($objWriter, $pSheet, $pStringTable);
+				$this->_writeSheetData($objWriter, $pSheet, $pStringTable, $sortCellCollectionEnabled);
 
 				// sheetProtection
 				$this->_writeSheetProtection($objWriter, $pSheet);
@@ -950,7 +950,8 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 	 * @param	string[]						$pStringTable	String table
 	 * @throws	PHPExcel_Writer_Exception
 	 */
-	private function _writeSheetData(PHPExcel_Shared_XMLWriter $objWriter = null, PHPExcel_Worksheet $pSheet = null, $pStringTable = null)
+	private function _writeSheetData(PHPExcel_Shared_XMLWriter $objWriter = null, PHPExcel_Worksheet $pSheet = null,
+									 $pStringTable = null, $sortCellCollectionEnabled = true)
 	{
 		if (is_array($pStringTable)) {
 			// Flipped stringtable, for faster index searching
@@ -967,7 +968,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 
 				// Loop through cells
 				$cellsByRow = array();
-				foreach ($pSheet->getCellCollection() as $cellID) {
+				foreach ($pSheet->getCellCollection($sortCellCollectionEnabled) as $cellID) {
 					$cellAddress = PHPExcel_Cell::coordinateFromString($cellID);
 					$cellsByRow[$cellAddress[1]][] = $cellID;
 				}

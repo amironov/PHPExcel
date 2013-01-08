@@ -74,6 +74,13 @@ abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
 	protected $_garbageCollectEnabled = true;
 
 	/**
+	 * Sort cell collection enabled
+	 *
+	 * @var boolean
+	 */
+	protected $_sortCellCollectionEnabled = true;
+
+	/**
 	 * Write charts in workbook?
 	 *		If this is true, then the Writer will write definitions for any charts that exist in the PHPExcel object.
 	 *		If false (the default) it will ignore any charts defined in the PHPExcel object.
@@ -181,5 +188,25 @@ abstract class PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
 	public function setGarbageCollectEnabled($pValue = true)
 	{
 		$this->_garbageCollectEnabled = $pValue;
+	}
+
+	/**
+	 *	   Sort cell collection enabled?
+	 *
+	 *	   @return boolean
+	 */
+	public function getSortCellCollectionEnabled()
+	{
+		return $this->_sortCellCollectionEnabled;
+	}
+
+	/**
+	 *	   Enable/disable sort cell collection
+	 *
+	 *	   @param boolean $pValue
+	 */
+	public function setSortCellCollectionEnabled($pValue = true)
+	{
+		$this->_sortCellCollectionEnabled = $pValue;
 	}
 }

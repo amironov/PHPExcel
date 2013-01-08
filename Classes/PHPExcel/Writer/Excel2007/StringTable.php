@@ -43,7 +43,7 @@ class PHPExcel_Writer_Excel2007_StringTable extends PHPExcel_Writer_Excel2007_Wr
 	 * @return 	string[] 				String table for worksheet
 	 * @throws 	PHPExcel_Writer_Exception
 	 */
-	public function createStringTable($pSheet = null, $pExistingTable = null)
+	public function createStringTable($pSheet = null, $pExistingTable = null, $sortCellCollectionEnabled = true)
 	{
 		if ($pSheet !== NULL) {
 			// Create string lookup table
@@ -60,7 +60,7 @@ class PHPExcel_Writer_Excel2007_StringTable extends PHPExcel_Writer_Excel2007_Wr
 			$aFlippedStringTable = $this->flipStringTable($aStringTable);
 
 			// Loop through cells
-			foreach ($pSheet->getCellCollection() as $cellID) {
+			foreach ($pSheet->getCellCollection($sortCellCollectionEnabled) as $cellID) {
 				$cell = $pSheet->getCell($cellID);
 				$cellValue = $cell->getValue();
 				if (!is_object($cellValue) &&

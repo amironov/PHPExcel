@@ -188,7 +188,10 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
 			// Create string lookup table
 			$this->_stringTable = array();
 			for ($i = 0; $i < $this->_spreadSheet->getSheetCount(); ++$i) {
-				$this->_stringTable = $this->getWriterPart('StringTable')->createStringTable($this->_spreadSheet->getSheet($i), $this->_stringTable);
+				$this->_stringTable = $this->getWriterPart('StringTable')
+										   ->createStringTable($this->_spreadSheet->getSheet($i),
+															   $this->_stringTable,
+															   $this->_sortCellCollectionEnabled);
 			}
 
 			// Create styles dictionaries
@@ -251,7 +254,12 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
 			$chartCount = 0;
 			// Add worksheets
 			for ($i = 0; $i < $this->_spreadSheet->getSheetCount(); ++$i) {
-				$objZip->addFromString('xl/worksheets/sheet' . ($i + 1) . '.xml', $this->getWriterPart('Worksheet')->writeWorksheet($this->_spreadSheet->getSheet($i), $this->_stringTable, $this->_includeCharts));
+				$objZip->addFromString('xl/worksheets/sheet' . ($i + 1) . '.xml',
+									   $this->getWriterPart('Worksheet')
+											->writeWorksheet($this->_spreadSheet->getSheet($i),
+															 $this->_stringTable,
+															 $this->_includeCharts,
+															 $this->_sortCellCollectionEnabled));
 				if ($this->_includeCharts) {
 					$charts = $this->_spreadSheet->getSheet($i)->getChartCollection();
 					if (count($charts) > 0) {

@@ -212,7 +212,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 	 * @param PHPExcel_Worksheet $phpSheet
 	 */
 	public function __construct(&$str_total, &$str_unique, &$str_table, &$colors,
-								$parser, $preCalculateFormulas, $phpSheet)
+								$parser, $preCalculateFormulas, $sortCellCollectionEnabled, $phpSheet)
 	{
 		// It needs to call its parent's constructor explicitly
 		parent::__construct();
@@ -222,6 +222,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
 
 		$this->_preCalculateFormulas = $preCalculateFormulas;
+		$this->_sortCellCollectionEnabled = $sortCellCollectionEnabled;
 		$this->_str_total		= &$str_total;
 		$this->_str_unique		= &$str_unique;
 		$this->_str_table		= &$str_table;
@@ -406,7 +407,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 		}
 
 		// Write Cells
-		foreach ($_phpSheet->getCellCollection() as $cellID) {
+		foreach ($_phpSheet->getCellCollection($this->_sortCellCollectionEnabled) as $cellID) {
 			$cell = $_phpSheet->getCell($cellID);
 			$row = $cell->getRow() - 1;
 			$column = PHPExcel_Cell::columnIndexFromString($cell->getColumn()) - 1;
